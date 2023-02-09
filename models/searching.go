@@ -1,7 +1,9 @@
 package models
 
 import (
+	"database/sql"
 	"fmt"
+	"log"
 )
 
 type Search interface {
@@ -16,33 +18,40 @@ func (s *SearchService) SearchByName(pattern string) {
 	pattern += "%"
 	command := fmt.Sprintf("SELECT name, description, price, amount FROM item_info WHERE name like '%s';", pattern)
 	exec, _ := db.Query(command)
-	defer exec.Close()
-	if exec.Next() == false {
-		fmt.Println("No such items!")
-	} else {
-		//fmt.Println(exec.Next())
 
-		err := printItems(exec)
-		if err != nil {
-			return
-		}
-	}
-	err := exec.Close()
+	err := printItems(exec)
 	if err != nil {
+		fmt.Println("Error:", err)
 		return
 	}
-	err = db.Close()
-	if err != nil {
-		return
-	}
-}
 
-func Some_func() {
-	db, _ := initDB()
-
-	exec, _ := db.Query("SELECT * FROM item_info;")
-
-	print_all(exec)
 	exec.Close()
 	db.Close()
+}
+
+func printItems(rows *sql.Rows) error {
+	var name, description string
+	var price, amount float64
+
+	for rows.Next() {
+		err := rows.Scan(&name, &description, &price, &amount)
+		if err != nil {
+			return err
+		}
+
+		fmt.Printf("Name: %s, Description: %s, Price: %f, Amount: %f\n", name, description, price, amount)
+	}
+
+	err := rows.Err()
+	if err != nil {
+		log.Printf("Error while processing rows: %v\n", err)
+		return err
+	}
+
+	if rows.NextResultSet() {
+		log.Println("Unexpected additional result set")
+		return fmt.Errorf("Unexpected additional result set")
+	}
+
+	return nil
 }

@@ -9,7 +9,7 @@ import (
 
 func initDB() (*sql.DB, error) {
 	db, err := sql.Open("postgres",
-		"user=postgres password=Dankb2131193* host=localhost port=5432 dbname=assignment1_console_golang sslmode=disable")
+		"user=postgres password=Dankb2131193* host=localhost port=5432 dbname=assignment1_go sslmode=disable")
 
 	if err != nil {
 		return nil, err
@@ -18,25 +18,27 @@ func initDB() (*sql.DB, error) {
 	return db, nil
 }
 
-func printItems(exec *sql.Rows) error {
-	for exec.Next() {
-		var (
-			name        string
-			description string
-			price       float64
-			amount      int
-		)
-
-		err := exec.Scan(&name, &description, &price, &amount)
-
-		if err != nil {
-			return err
-		}
-		fmt.Println(name, description, price, amount)
-	}
-	exec.Close()
-	return nil
-}
+//func printItems(exec *sql.Rows) error {
+//
+//	for exec.Next() {
+//		var (
+//			name        string
+//			description string
+//			price       float64
+//			amount      int
+//		)
+//
+//		err := exec.Scan(&name, &description, &price, &amount)
+//
+//		if err != nil {
+//			log.Fatalf("ERROR ", err)
+//			return err
+//		}
+//		fmt.Println(name, description, price, amount)
+//	}
+//	exec.Close()
+//	return nil
+//}
 
 //func (u *User) FilterItemByPrice(sortForm string) {
 //	db, _ := initDB()

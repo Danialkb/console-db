@@ -5,6 +5,7 @@ import "console-db/models"
 func main() {
 	ss := &models.SearchService{}
 
-	ss.SearchByName("dre")
+	ss.SearchByName("sh")
+	//models.Some_func()
 
 }
