@@ -9,7 +9,7 @@ import (
 
 func initDB() (*sql.DB, error) {
 	db, err := sql.Open("postgres",
-		"user=postgres password=Dankb2131193* host=localhost port=5432 dbname=assignment1_go sslmode=disable")
+		"user=postgres password=Dankb2131193* host=localhost port=5432 dbname=assignment1_console_golang sslmode=disable")
 
 	if err != nil {
 		return nil, err
@@ -17,28 +17,6 @@ func initDB() (*sql.DB, error) {
 
 	return db, nil
 }
-
-//func printItems(exec *sql.Rows) error {
-//
-//	for exec.Next() {
-//		var (
-//			name        string
-//			description string
-//			price       float64
-//			amount      int
-//		)
-//
-//		err := exec.Scan(&name, &description, &price, &amount)
-//
-//		if err != nil {
-//			log.Fatalf("ERROR ", err)
-//			return err
-//		}
-//		fmt.Println(name, description, price, amount)
-//	}
-//	exec.Close()
-//	return nil
-//}
 
 //func (u *User) FilterItemByPrice(sortForm string) {
 //	db, _ := initDB()
@@ -61,19 +39,20 @@ func getPwd(pwd string) (string, error) {
 	return string(hash), nil
 }
 
-func print_all(exec *sql.Rows) {
-	for exec.Next() {
-		var (
-			id          int
-			name        string
-			description string
-			price       float64
-			amount      int
-			user_id     int
-		)
-
-		exec.Scan(&id, &name, &description, &price, &amount, &user_id)
-
-		fmt.Println(name, description, price, amount)
+func printItems(rows *sql.Rows) error {
+	var name, description string
+	var price, amount float64
+	i := 0
+	for rows.Next() {
+		err := rows.Scan(&name, &description, &price, &amount)
+		if err != nil {
+			return err
+		}
+		i++
+		fmt.Printf("Name: %s, Description: %s, Price: %f, Amount: %f\n", name, description, price, amount)
 	}
+	if i == 0 {
+		fmt.Println("No such items!")
+	}
+	return nil
 }
